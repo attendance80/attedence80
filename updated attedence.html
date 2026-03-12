@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPMP POLYTECHNIC - Attendance Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .header h2 {
+            font-size: 1.8em;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .header h3 {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #ffd700;
+        }
+
+        /* Subject Entry Section */
+        .subject-entry {
+            padding: 30px;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2d3436;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .subject-number {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .subject-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subject-item label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #636e72;
+            font-size: 0.9em;
+        }
+
+        .subject-item input {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+
+        .subject-item input:focus {
+            outline: none;
+            border-color: #00b894;
+            box-shadow: 0 0 0 3px rgba(0,184,148,0.1);
+        }
+
+        /* Button Section */
+        .button-section {
+            padding: 20px 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-success {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00a187;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,184,148,0.4);
+        }
+
+        .btn-warning {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+
+        .btn-warning:hover {
+            background: #fdc15e;
+            transform: translateY(-2px);
+        }
+
+        /* Percentage Options - Now above buttons */
+        .percentage-section {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .percentage-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .percentage-options {
+            display: flex;
+            gap: 30px;
+        }
+
+        .percentage-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .percentage-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .percentage-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .percentage-option label {
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: 500;
+            color: #2d3436;
+        }
+
+        /* Table Section */
+        .table-section {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #2d3436;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #f1f3f5;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            color: #636e72;
+            margin-bottom: 10px;
+            font-size: 1em;
+            text-transform: uppercase;
+        }
+
+        .summary-card .value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #2d3436;
+        }
+
+        .summary-card .value.success {
+            color: #00b894;
+        }
+
+        .summary-card .value.warning {
+            color: #fdcb6e;
+        }
+
+        .summary-card .value.danger {
+            color: #d63031;
+        }
+
+        /* Download Section */
+        .download-section {
+            padding: 20px 30px 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-download {
+            background: #0984e3;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #0873c4;
+        }
+
+        .btn-excel {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #229954;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header h2 {
+                font-size: 1.5em;
+            }
+            
+            .subject-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-section {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .percentage-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>VPMP POLYTECHNIC</h1>
+            <h2>Attendance Calculation System</h2>
+            <h3>📍 Gandhinagar, Gujarat</h3>
+        </div>
+
+        <!-- Subject Entry Section -->
+        <div class="subject-entry">
+            <div class="section-title">📚 Subject Details</div>
+            <div id="subjects-container">
+                <!-- First subject (default) -->
+                <div class="subject-grid" id="subject-1">
+                    <div class="subject-number">Subject 1</div>
+                    <div class="subject-item">
+                        <label>Total Lectures</label>
+                        <input type="number" class="total-lectures" min="0" placeholder="0">
+                    </div>
+                    <div class="subject-item">
+                        <label>Total Labs</label>
+                        <input type="number" class="total-labs" min="0" placeholder="0">
+                    </div>
+                    <div class="subject-item">
+                        <label>Attended Lectures</label>
+                        <input type="number" class="attended-lectures" min="0" placeholder="0">
+                    </div>
+                    <div class="subject-item">
+                        <label>Attended Labs</label>
+                        <input type="number" class="attended-labs" min="0" placeholder="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Percentage Options - Moved above buttons -->
+        <div class="percentage-section">
+            <div class="percentage-title">Required Attendance Percentage:</div>
+            <div class="percentage-options">
+                <div class="percentage-option">
+                    <input type="radio" name="requiredPercentage" id="percent75" value="75" checked>
+                    <label for="percent75">75% (Standard)</label>
+                </div>
+                <div class="percentage-option">
+                    <input type="radio" name="requiredPercentage" id="percent80" value="80">
+                    <label for="percent80">80% (Compulsory)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-section">
+            <button class="btn btn-primary" onclick="addSubject()">
+                ➕ Add New Subject
+            </button>
+            <button class="btn btn-success" onclick="calculateAttendance()">
+                📊 Calculate Attendance
+            </button>
+            <button class="btn btn-warning" onclick="resetForm()">
+                🔄 Reset Form
+            </button>
+        </div>
+
+        <!-- Results Table -->
+        <div class="table-section" id="results-section" style="display: none;">
+            <table id="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Lec</th>
+                        <th>Total Lab</th>
+                        <th>Attd Lec</th>
+                        <th>Attd Lab</th>
+                        <th>Lec %</th>
+                        <th>Lab %</th>
+                        <th>Total Classes</th>
+                        <th>Attd Classes</th>
+                        <th>Overall %</th>
+                        <th>Status</th>
+                        <th>Classes Needed</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-section" id="summary-section" style="display: none;">
+            <div class="summary-card">
+                <h4>Overall Attendance</h4>
+                <div class="value" id="overall-percentage">0%</div>
+            </div>
+            <div class="summary-card">
+                <h4>Classes to Attend (75%)</h4>
+                <div class="value success" id="classes-needed-75">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Classes to Attend (80%)</h4>
+                <div class="value warning" id="classes-needed-80">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Total Classes</h4>
+                <div class="value" id="total-classes">0</div>
+            </div>
+        </div>
+
+        <!-- Download Buttons -->
+        <div class="download-section" id="download-section" style="display: none;">
+            <button class="btn btn-download" onclick="downloadPDF()">
+                📥 Download PDF Report
+            </button>
+            <button class="btn btn-excel" onclick="downloadExcel()">
+                📊 Download Excel Report
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        let subjectCount = 1;
+
+        // Add new subject
+        function addSubject() {
+            subjectCount++;
+            const container = document.getElementById('subjects-container');
+            const newSubject = document.createElement('div');
+            newSubject.className = 'subject-grid';
+            newSubject.id = `subject-${subjectCount}`;
+            newSubject.innerHTML = `
+                <div class="subject-number">Subject ${subjectCount}</div>
+                <div class="subject-item">
+                    <label>Total Lectures</label>
+                    <input type="number" class="total-lectures" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Total Labs</label>
+                    <input type="number" class="total-labs" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Attended Lectures</label>
+                    <input type="number" class="attended-lectures" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Attended Labs</label>
+                    <input type="number" class="attended-labs" min="0" placeholder="0">
+                </div>
+            `;
+            container.appendChild(newSubject);
+        }
+
+        // Calculate attendance
+        function calculateAttendance() {
+            const requiredPercent = document.querySelector('input[name="requiredPercentage"]:checked').value;
+            
+            // Collect subject data
+            const subjects = [];
+            let totalOverallClasses = 0;
+            let totalAttendedClasses = 0;
+            let hasValidSubject = false;
+
+            for (let i = 1; i <= subjectCount; i++) {
+                const subjectGrid = document.getElementById(`subject-${i}`);
+                if (!subjectGrid) continue;
+
+                const totalLectures = parseInt(subjectGrid.querySelector('.total-lectures')?.value) || 0;
+                const totalLabs = parseInt(subjectGrid.querySelector('.total-labs')?.value) || 0;
+                const attendedLectures = parseInt(subjectGrid.querySelector('.attended-lectures')?.value) || 0;
+                const attendedLabs = parseInt(subjectGrid.querySelector('.attended-labs')?.value) || 0;
+
+                // Check if at least one field has a value
+                if (totalLectures > 0 || totalLabs > 0 || attendedLectures > 0 || attendedLabs > 0) {
+                    hasValidSubject = true;
+                    
+                    const totalClasses = totalLectures + totalLabs;
+                    const attendedClasses = attendedLectures + attendedLabs;
+                    const overallPercentage = totalClasses > 0 ? ((attendedClasses / totalClasses) * 100).toFixed(2) : 0;
+                    
+                    // Separate percentages
+                    const lecturePercentage = totalLectures > 0 ? ((attendedLectures / totalLectures) * 100).toFixed(2) : 'N/A';
+                    const labPercentage = totalLabs > 0 ? ((attendedLabs / totalLabs) * 100).toFixed(2) : 'N/A';
+
+                    let classesNeeded = 0;
+                    if (overallPercentage < requiredPercent && totalClasses > 0) {
+                        classesNeeded = Math.ceil((requiredPercent * totalClasses / 100) - attendedClasses);
+                        classesNeeded = Math.max(0, classesNeeded);
+                    }
+
+                    subjects.push({
+                        name: `Subject ${i}`,
+                        totalLectures,
+                        totalLabs,
+                        attendedLectures,
+                        attendedLabs,
+                        lecturePercentage,
+                        labPercentage,
+                        totalClasses,
+                        attendedClasses,
+                        overallPercentage,
+                        status: overallPercentage >= requiredPercent ? '✅ Safe' : '⚠️ Risk',
+                        classesNeeded
+                    });
+
+                    totalOverallClasses += totalClasses;
+                    totalAttendedClasses += attendedClasses;
+                }
+            }
+
+            if (!hasValidSubject) {
+                alert('Please enter at least one subject with values!');
+                return;
+            }
+
+            // Display results
+            displayResults(subjects, totalOverallClasses, totalAttendedClasses, requiredPercent);
+        }
+
+        // Display results in table
+        function displayResults(subjects, totalOverallClasses, totalAttendedClasses, requiredPercent) {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject.name}</td>
+                    <td>${subject.totalLectures}</td>
+                    <td>${subject.totalLabs}</td>
+                    <td>${subject.attendedLectures}</td>
+                    <td>${subject.attendedLabs}</td>
+                    <td>${subject.lecturePercentage}%</td>
+                    <td>${subject.labPercentage}%</td>
+                    <td>${subject.totalClasses}</td>
+                    <td>${subject.attendedClasses}</td>
+                    <td>${subject.overallPercentage}%</td>
+                    <td style="color: ${subject.status.includes('Safe') ? '#00b894' : '#d63031'}">${subject.status}</td>
+                    <td>${subject.classesNeeded}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Calculate overall percentage
+            const overallPercentage = totalOverallClasses > 0 ? 
+                ((totalAttendedClasses / totalOverallClasses) * 100).toFixed(2) : 0;
+
+            // Calculate classes needed for 75% and 80%
+            const classesNeeded75 = totalOverallClasses > 0 ?
+                Math.ceil((75 * totalOverallClasses / 100) - totalAttendedClasses) : 0;
+            const classesNeeded80 = totalOverallClasses > 0 ?
+                Math.ceil((80 * totalOverallClasses / 100) - totalAttendedClasses) : 0;
+
+            // Update summary
+            document.getElementById('overall-percentage').textContent = `${overallPercentage}%`;
+            document.getElementById('classes-needed-75').textContent = Math.max(0, classesNeeded75);
+            document.getElementById('classes-needed-80').textContent = Math.max(0, classesNeeded80);
+            document.getElementById('total-classes').textContent = totalOverallClasses;
+
+            // Show results sections
+            document.getElementById('results-section').style.display = 'block';
+            document.getElementById('summary-section').style.display = 'grid';
+            document.getElementById('download-section').style.display = 'flex';
+        }
+
+        // Reset form
+        function resetForm() {
+            // Remove all subjects except first
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            
+            // Add first subject
+            subjectCount = 1;
+            const firstSubject = document.createElement('div');
+            firstSubject.className = 'subject-grid';
+            firstSubject.id = 'subject-1';
+            firstSubject.innerHTML = `
+                <div class="subject-number">Subject 1</div>
+                <div class="subject-item">
+                    <label>Total Lectures</label>
+                    <input type="number" class="total-lectures" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Total Labs</label>
+                    <input type="number" class="total-labs" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Attended Lectures</label>
+                    <input type="number" class="attended-lectures" min="0" placeholder="0">
+                </div>
+                <div class="subject-item">
+                    <label>Attended Labs</label>
+                    <input type="number" class="attended-labs" min="0" placeholder="0">
+                </div>
+            `;
+            container.appendChild(firstSubject);
+
+            // Reset radio to default (75%)
+            document.getElementById('percent75').checked = true;
+
+            // Hide results sections
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('summary-section').style.display = 'none';
+            document.getElementById('download-section').style.display = 'none';
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add header
+            doc.setFontSize(20);
+            doc.text('VPMP POLYTECHNIC', 105, 15, { align: 'center' });
+            doc.setFontSize(16);
+            doc.text('Attendance Report', 105, 25, { align: 'center' });
+            
+            // Add date
+            const today = new Date();
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${today.toLocaleDateString()}`, 105, 35, { align: 'center' });
+
+            // Add table
+            const tableData = [];
+            const rows = document.querySelectorAll('#attendance-table tbody tr');
+            
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                tableData.push(rowData);
+            });
+
+            doc.autoTable({
+                startY: 45,
+                head: [['Subject', 'Tot Lec', 'Tot Lab', 'Att Lec', 'Att Lab', 'Lec %', 'Lab %', 'Tot Cls', 'Att Cls', 'Ov %', 'Status', 'Need']],
+                body: tableData,
+                styles: { fontSize: 7 },
+                headStyles: { fillColor: [41, 128, 185] }
+            });
+
+            doc.save('attendance_report.pdf');
+        }
+
+        // Download Excel
+        function downloadExcel() {
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+
+            // Info sheet
+            const requiredPercent = document.querySelector('input[name="requiredPercentage"]:checked').value;
+            const infoData = [
+                ['VPMP POLYTECHNIC - Attendance Report'],
+                [''],
+                ['Report Information'],
+                ['Required Percentage', requiredPercent + '%'],
+                ['Generated Date', new Date().toLocaleDateString()],
+                [''],
+                ['Attendance Summary']
+            ];
+
+            // Add summary data
+            infoData.push(['Overall Percentage', document.getElementById('overall-percentage').textContent]);
+            infoData.push(['Classes Needed (75%)', document.getElementById('classes-needed-75').textContent]);
+            infoData.push(['Classes Needed (80%)', document.getElementById('classes-needed-80').textContent]);
+            infoData.push(['Total Classes', document.getElementById('total-classes').textContent]);
+
+            const ws1 = XLSX.utils.aoa_to_sheet(infoData);
+            XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+
+            // Subject details sheet
+            const tableData = [['Subject', 'Total Lec', 'Total Lab', 'Att Lec', 'Att Lab', 'Lec %', 'Lab %', 
+                               'Total Classes', 'Attended Classes', 'Overall %', 'Status', 'Classes Needed']];
+            
+            const rows = document.querySelectorAll('#attendance-table tbody tr');
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                tableData.push(rowData);
+            });
+
+            const ws2 = XLSX.utils.aoa_to_sheet(tableData);
+            XLSX.utils.book_append_sheet(wb, ws2, 'Subject Details');
+
+            // Save file
+            XLSX.writeFile(wb, 'attendance_report.xlsx');
+        }
+
+        // Input validation
+        document.addEventListener('input', function(e) {
+            if (e.target.type === 'number') {
+                if (e.target.value < 0) e.target.value = 0;
+                
+                // Validate attended doesn't exceed total for the same subject row
+                const grid = e.target.closest('.subject-grid');
+                if (grid) {
+                    const totalLectures = parseInt(grid.querySelector('.total-lectures')?.value) || 0;
+                    const totalLabs = parseInt(grid.querySelector('.total-labs')?.value) || 0;
+                    const attendedLectures = parseInt(grid.querySelector('.attended-lectures')?.value) || 0;
+                    const attendedLabs = parseInt(grid.querySelector('.attended-labs')?.value) || 0;
+                    
+                    if (attendedLectures > totalLectures) {
+                        grid.querySelector('.attended-lectures').value = totalLectures;
+                    }
+                    if (attendedLabs > totalLabs) {
+                        grid.querySelector('.attended-labs').value = totalLabs;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
